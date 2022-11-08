@@ -6,6 +6,7 @@ import {
   HttpCode,
   HttpStatus,
   Param,
+  ParseIntPipe,
   Post,
   Put,
 } from '@nestjs/common';
@@ -29,20 +30,17 @@ export class CourseController {
 
   @HttpCode(HttpStatus.FOUND)
   @Get('/:id')
-  get(@Param('id') id: string) {
-    const pk = Number(id);
-    return this.courseService.getById(pk);
+  get(@Param('id', ParseIntPipe) id: number) {
+    return this.courseService.getById(id);
   }
 
   @Put('/:id')
-  update(@Param('id') id: string, @Body() dto: CreateCourseDto) {
-    const pk = Number(id);
-    return this.courseService.updateById(pk, dto);
+  update(@Param('id', ParseIntPipe) id: number, @Body() dto: CreateCourseDto) {
+    return this.courseService.updateById(id, dto);
   }
 
   @Delete('/:id')
-  deleteById(@Param('id') id: string) {
-    const pk = Number(id);
-    return this.courseService.deleteById(pk);
+  deleteById(@Param('id', ParseIntPipe) id: number) {
+    return this.courseService.deleteById(id);
   }
 }

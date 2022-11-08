@@ -11,9 +11,16 @@ export class Course extends Model<Course, ICourse> {
   })
   id: number;
 
-  @Column(DataType.CHAR)
-  name: string;
+  @Column({
+    type: DataType.CHAR,
+    allowNull: false,
+    unique: true,
+  })
+  title: string;
 
   @Column(DataType.CHAR)
   description: string;
+
+  @Column(DataType.ARRAY(DataType.CHAR))
+  advantages: string[];
 }

@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { Course } from './course.model';
 import { CreateCourseDto } from './dto/create-course.dto';
@@ -8,7 +8,9 @@ export class CourseService {
   constructor(@InjectModel(Course) private courseRepository: typeof Course) {}
 
   async create(dto: CreateCourseDto) {
-    return this.courseRepository.create(dto);
+    return this.courseRepository.create(dto).catch((reason: any) => {
+      throw new HttpException(reason.errors[0].message, HttpStatus.BAD_REQUEST);
+    });
   }
 
   async getById(id: number) {
@@ -25,11 +27,11 @@ export class CourseService {
     });
   }
 
-  async updateById(id: number, dto: any) {
+  async updateById(id: number, dto: CreateCourseDto) {
     return this.courseRepository
       .update(
         {
-          name: dto.name,
+          title: dto.title,
           description: dto.description,
         },
         {
