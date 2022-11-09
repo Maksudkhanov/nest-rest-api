@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  DefaultValuePipe,
   Delete,
   Get,
   HttpCode,
@@ -9,7 +10,9 @@ import {
   ParseIntPipe,
   Post,
   Put,
+  Query,
 } from '@nestjs/common';
+import { paginateItems } from 'src/utils/paginateItems';
 import { CourseService } from './course.service';
 import { CreateCourseDto } from './dto/create-course.dto';
 
@@ -17,30 +20,42 @@ import { CreateCourseDto } from './dto/create-course.dto';
 export class CourseController {
   constructor(private courseService: CourseService) {}
 
-  @HttpCode(HttpStatus.CREATED)
   @Post('/')
-  create(@Body() dto: CreateCourseDto) {
+  @HttpCode(HttpStatus.CREATED)
+  async create(@Body() dto: CreateCourseDto) {
     return this.courseService.create(dto);
   }
 
   @Get('/all')
-  getAll() {
-    return this.courseService.getAll();
+  @HttpCode(HttpStatus.OK)
+  async getAll(
+    @Query('page', new DefaultValuePipe(1), ParseIntPipe)
+    page?: number,
+    @Query('limit', new DefaultValuePipe(5), ParseIntPipe) limit?: number,
+  ) {
+    const results = await this.courseService.getAll();
+    const paginatedResults = paginateItems(results, page, limit);
+    return paginatedResults;
   }
 
-  @HttpCode(HttpStatus.FOUND)
   @Get('/:id')
-  get(@Param('id', ParseIntPipe) id: number) {
+  @HttpCode(HttpStatus.OK)
+  async get(@Param('id', ParseIntPipe) id: number) {
     return this.courseService.getById(id);
   }
 
   @Put('/:id')
-  update(@Param('id', ParseIntPipe) id: number, @Body() dto: CreateCourseDto) {
+  @HttpCode(HttpStatus.OK)
+  async update(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() dto: CreateCourseDto,
+  ) {
     return this.courseService.updateById(id, dto);
   }
 
   @Delete('/:id')
-  deleteById(@Param('id', ParseIntPipe) id: number) {
+  @HttpCode(HttpStatus.OK)
+  async deleteById(@Param('id', ParseIntPipe) id: number) {
     return this.courseService.deleteById(id);
   }
 }

@@ -14,17 +14,32 @@ export class CourseService {
   }
 
   async getById(id: number) {
-    return this.courseRepository.findByPk(id, {
-      attributes: ['id', 'name', 'description'],
-    });
+    return this.courseRepository
+      .findByPk(id, {
+        attributes: ['id', 'name', 'description'],
+      })
+      .catch((reason: any) => {
+        throw new HttpException(
+          reason.errors[0].message,
+          HttpStatus.BAD_REQUEST,
+        );
+      });
   }
 
   async deleteById(id: number) {
-    return this.courseRepository.findByPk(id).then(async (result) => {
-      return this.courseRepository.destroy({ where: { id } }).then(() => {
-        return result;
+    return this.courseRepository
+      .findByPk(id)
+      .then(async (result) => {
+        return this.courseRepository.destroy({ where: { id } }).then(() => {
+          return result;
+        });
+      })
+      .catch((reason: any) => {
+        throw new HttpException(
+          reason.errors[0].message,
+          HttpStatus.BAD_REQUEST,
+        );
       });
-    });
   }
 
   async updateById(id: number, dto: CreateCourseDto) {
@@ -41,10 +56,18 @@ export class CourseService {
       )
       .then((result) => {
         return result[1][0];
+      })
+      .catch((reason: any) => {
+        throw new HttpException(
+          reason.errors[0].message,
+          HttpStatus.BAD_REQUEST,
+        );
       });
   }
 
   async getAll() {
-    return this.courseRepository.findAll();
+    return this.courseRepository.findAll().catch((reason: any) => {
+      throw new HttpException(reason.errors[0].message, HttpStatus.BAD_REQUEST);
+    });
   }
 }
