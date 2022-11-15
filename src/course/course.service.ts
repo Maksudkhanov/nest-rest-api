@@ -7,13 +7,13 @@ import { CreateCourseDto } from './dto/create-course.dto';
 export class CourseService {
   constructor(@InjectModel(Course) private courseRepository: typeof Course) {}
 
-  async create(dto: CreateCourseDto) {
+  async create(dto: CreateCourseDto): Promise<Course | HttpException> {
     return this.courseRepository.create(dto).catch((reason: any) => {
       throw new HttpException(reason.errors[0].message, HttpStatus.BAD_REQUEST);
     });
   }
 
-  async getById(id: number) {
+  async getById(id: number): Promise<Course | HttpException> {
     return this.courseRepository
       .findByPk(id, {
         attributes: ['id', 'name', 'description'],
@@ -26,7 +26,7 @@ export class CourseService {
       });
   }
 
-  async deleteById(id: number) {
+  async deleteById(id: number): Promise<Course | HttpException> {
     return this.courseRepository
       .findByPk(id)
       .then(async (result) => {
@@ -42,7 +42,10 @@ export class CourseService {
       });
   }
 
-  async updateById(id: number, dto: CreateCourseDto) {
+  async updateById(
+    id: number,
+    dto: CreateCourseDto,
+  ): Promise<Course | HttpException> {
     return this.courseRepository
       .update(
         {
@@ -65,7 +68,7 @@ export class CourseService {
       });
   }
 
-  async getAll() {
+  async getAll(): Promise<Course[] | HttpException> {
     return this.courseRepository.findAll().catch((reason: any) => {
       throw new HttpException(reason.errors[0].message, HttpStatus.BAD_REQUEST);
     });

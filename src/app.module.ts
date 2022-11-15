@@ -4,6 +4,9 @@ import { SequelizeModule } from '@nestjs/sequelize';
 import { LoggerMiddleware } from './common/middleware/logger.middleware';
 import { Course } from './course/course.model';
 import { CourseModule } from './course/course.module';
+import { ThemeModule } from './theme/theme.module';
+import { FileModule } from './file/file.module';
+import { File } from './file/file.model';
 
 @Module({
   imports: [
@@ -18,10 +21,12 @@ import { CourseModule } from './course/course.module';
       username: process.env.DATABASE_USER,
       password: process.env.DATABASE_PASSWORD,
       database: process.env.DATABASE_NAME,
-      models: [Course],
+      models: [Course, File],
       autoLoadModels: true,
     }),
     CourseModule,
+    ThemeModule,
+    FileModule,
   ],
   controllers: [],
   providers: [],

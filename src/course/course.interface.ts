@@ -1,4 +1,5 @@
 export interface ICourse {
-  name: string;
+  title: string;
   description: string;
+  advantages: string[];
 }

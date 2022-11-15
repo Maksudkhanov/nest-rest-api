@@ -1,7 +1,7 @@
 import { Column, DataType, Model, Table } from 'sequelize-typescript';
-import { ICourse } from './interfaces/course.interface';
+import { ICourse } from './course.interface';
 
-@Table({ tableName: 'courses' })
+@Table({ tableName: 'course' })
 export class Course extends Model<Course, ICourse> {
   @Column({
     type: DataType.INTEGER,

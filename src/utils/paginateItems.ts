@@ -1,8 +1,8 @@
-export function paginateItems(items: any[], page: number, limit: number) {
-  if (items.length === 0) {
-    return 'There is not any items';
-  }
-
+export function paginateItems(
+  items: any[],
+  page: number,
+  limit: number,
+): IPaginatedItems {
   const startIndex = (page - 1) * limit;
   const endIndex = page * limit;
   const results: any = {};
@@ -22,6 +22,17 @@ export function paginateItems(items: any[], page: number, limit: number) {
   }
 
   results.results = items.slice(startIndex, endIndex);
-
   return results;
+}
+
+export interface IPaginatedItems {
+  results: any[];
+  next?: {
+    page: number;
+    limit: number;
+  };
+  previous?: {
+    page: number;
+    limit: number;
+  };
 }
